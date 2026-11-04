@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CLASS CASH</title>
+<style>
+:root{--navy:#0b1f4d;--blue:#2f6bff;--bg:#f3f6fc;--card:#fff;--tx:#12203f;--mut:#6b7794;--bd:#e3e9f5;--ok:#16a34a;--bad:#dc2626;--sb:#0b1f4d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1226;--card:#121c38;--tx:#e8edfa;--mut:#8f9cc0;--bd:#223058;--sb:#070e22}}
+:root[data-theme="dark"]{--bg:#0a1226;--card:#121c38;--tx:#e8edfa;--mut:#8f9cc0;--bd:#223058;--sb:#070e22}
+*{box-sizing:border-box}html,body{margin:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
+button,input,select{font:inherit}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600;transition:.2s}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.btn.g{background:transparent;color:var(--blue);border:1px solid var(--bd)}.btn.r{background:var(--bad)}.btn.s{padding:6px 10px;font-size:13px}
+input,select{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,select:focus{outline:2px solid var(--blue);border-color:transparent}
+label{font-size:13px;color:var(--mut);display:block;margin:0 0 4px}
+.login{min-height:calc(100vh - 70px);display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#0b1f4d,#1d4ed8)}
+.lbox{background:var(--card);border-radius:20px;padding:32px;width:100%;max-width:380px;animation:up .5s}
+.logo{font-weight:800;letter-spacing:.5px;font-size:22px}.logo b{color:var(--blue)}
+.sub{color:var(--mut);font-size:13px;margin:4px 0 20px}
+.app{display:flex;min-height:100vh}
+.sb{width:240px;background:var(--sb);color:#cfd9f5;padding:22px 14px;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;gap:6px;transition:.3s;z-index:20}
+.sb .logo{color:#fff;padding:0 10px 18px}
+.nav{background:none;border:0;color:inherit;text-align:left;padding:12px 14px;border-radius:10px;cursor:pointer;transition:.2s;display:flex;gap:10px;align-items:center}
+.nav:hover{background:rgba(255,255,255,.08)}.nav.on{background:var(--blue);color:#fff}
+.main{margin-left:240px;flex:1;padding:24px;min-width:0;animation:up .35s}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:20px}.top h1{margin:0;font-size:22px;flex:1}
+.burger{display:none}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(11,31,77,.04)}
+.card h3{margin:0 0 12px;font-size:15px}
+.k{color:var(--mut);font-size:13px}.v{font-size:24px;font-weight:700;margin-top:4px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mut);font-size:12px;text-transform:uppercase}
+.pill{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}.pill.l{background:#dcfce7;color:#166534}.pill.t{background:#fee2e2;color:#991b1b}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));align-items:end}
+.bars{display:flex;gap:14px;align-items:flex-end;height:160px}.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bp{display:flex;gap:4px;align-items:flex-end;height:130px;width:100%;justify-content:center}.bp i{width:40%;max-width:26px;border-radius:6px 6px 0 0;transition:height .6s;min-height:2px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:8px}
+.ph{background:var(--sb);color:#cfd9f5;display:flex;align-items:center;gap:6px;padding:14px 20px;flex-wrap:wrap}.ph .logo{padding:0}
+.pm{max-width:1000px;margin:0 auto;padding:24px 16px;animation:up .4s}
+.hero{background:linear-gradient(135deg,#0b1f4d,#2f6bff);color:#fff;border-radius:20px;padding:28px;margin-bottom:16px}.hero .v{font-size:36px}.hero .k{color:#cfd9f5}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:800px){.sb{transform:translateX(-100%)}.sb.open{transform:none}.main{margin-left:0;padding:16px}.burger{display:inline-block}}
+</style></head><body>
+<div id="root"></div>
+<script>
+const KEY="classcash_v1";
+let D=null,view="dash",err="";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rp=n=>"Rp "+Math.round(n).toLocaleString("id-ID");
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,10);
+function load(){try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){D=null}
+  if(!D||!D.user){D=fresh({name:"Admin123",hash:"926ee9838620b9feaee288643f3c00f506e152eb7dbf262b745a61788bc38410"});save()}
+  if(!D.v||D.v<2){D.v=2;D.rate=2000;D.start="2026-11-04"}
+  if(D.v<3){D.v=3;const N=["Dita","Austin","Aurel","Brian","Charisma","Charmel","Darren","Qiya","Valentino","Gilsey","Deo","Ujep","Jessica","Joshua","Josua","Keasea","Nisa","Liora","Echi","El","Irfan","Cessa","Rebecca","Rico","Xen","Miko"];D.students.forEach((s,i)=>{if(N[i])s.name=N[i]});save()}
+  if(mig4())save()}
+let READY=false,PD=null,RS=false;
+function mig4(){if((D.v||0)<4){D.v=4;if(D.start<="2026-11-04")D.start="2026-11-05";return true}return false}
+let DB=null;
+function setSt(t,c){const e=document.getElementById("st");if(e){e.textContent=t;e.style.color=c||""}}
+function toast(t,bad){const d=document.createElement("div");d.textContent=t;d.style.cssText="position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:12px 20px;border-radius:12px;color:#fff;font-weight:600;z-index:99;background:"+(bad?"#dc2626":"#16a34a");document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
+function pub(){const o={...D};delete o.user;return{json:JSON.stringify(o),t:Date.now()}}
+async function push(){
+  if(!DB){setSt("⚠ Hanya tersimpan di perangkat ini","var(--bad)");return false}
+  try{await DB.doc("app/state").set(pub());setSt("✓ Tersimpan "+new Date().toLocaleTimeString("id-ID"),"var(--ok)");return true}
+  catch(e){setSt("⚠ Gagal menyimpan ke database","var(--bad)");return false}}
+function save(){if(READY)D.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}setSt("Menyimpan...");push()}
+async function manualSave(){D.t=Date.now();setSt("Menyimpan...");try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}
+  const ok=await push();toast(ok?"✓ Data berhasil disimpan":"Gagal menyimpan ke database. Buka lewat akun Claude pemilik halaman ini.",!ok)}
+async function initDB(){try{
+  const c=await claude.use("db");if(!c)return;DB=c;let first=true;
+  c.doc("app/state").onSnapshot(s=>{
+    const f=first;first=false;
+    if(!s.exists){if(f)push();return}
+    try{const r=JSON.parse(s.data().json);if(s.data().json===pub().json)return;if((r.t||0)<=(D.t||0))return;
+      const a=document.activeElement&&document.activeElement.tagName;if(s.hasPendingWrites||a==="INPUT"||a==="SELECT")return;
+      D={...r,user:D.user};if(mig4()){D.t=Date.now();push()}try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}R()}catch(e){}
+  },()=>{})}catch(e){}}
+function fresh(user){return{user,rate:5000,start:today(),students:Array.from({length:26},(_,i)=>({id:uid(),name:"Siswa "+(i+1)})),pays:[],exps:[]}}
+async function hash(s){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("cc:"+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return btoa(s)}}
+const logged=()=>{try{return sessionStorage.getItem("cc_in")==="1"}catch(e){return window._in}};
+function setLogged(v){try{sessionStorage.setItem("cc_in",v?"1":"0")}catch(e){}window._in=v}
+const wd=()=>{let n=0;const e=new Date();e.setHours(0,0,0,0);for(let d=new Date(D.start+"T00:00:00");d<=e;d.setDate(d.getDate()+1)){const g=d.getDay();if(g>0&&g<6)n++}return n};
+const paid=id=>D.pays.filter(p=>p.sid===id&&p.date>=D.start).reduce((a,p)=>a+p.amt,0);
+const due=id=>Math.max(0,wd()*D.rate-paid(id));
+const inc=()=>D.pays.reduce((a,p)=>a+p.amt,0),out=()=>D.exps.reduce((a,p)=>a+p.amt,0);
+const sname=id=>(D.students.find(s=>s.id===id)||{name:"-"}).name;
+const fd=d=>new Date(d).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"});
+
+function R(){
+  const r=$("#root");
+  if(!D||!D.user||!logged()){r.innerHTML=pubHTML();return}
+  const nav=[["dash","📊","Dashboard"],["siswa","👥","Data Siswa"],["bayar","💰","Pembayaran"],["keluar","🧾","Pengeluaran"],["lap","📑","Laporan"],["set","⚙️","Pengaturan"]];
+  const titles=Object.fromEntries(nav.map(n=>[n[0],n[2]]));
+  r.innerHTML=`<div class="app"><aside class="sb" id="sb"><div class="logo">CLASS <b style="color:#6ea0ff">CASH</b></div>
+  ${nav.map(n=>`<button class="nav ${view===n[0]?"on":""}" onclick="go('${n[0]}')"><span>${n[1]}</span>${n[2]}</button>`).join("")}
+  <div style="flex:1"></div><button class="nav" onclick="logout()">🚪 Keluar</button></aside>
+  <main class="main"><div class="top"><button class="btn g burger" onclick="$('#sb').classList.toggle('open')">☰</button><h1>${titles[view]}</h1><span id="st" class="k" style="font-size:12px"></span><button class="btn s" onclick="manualSave()">💾 Simpan</button><span class="k">Halo, ${esc(D.user.name)}</span></div>${V[view]()}</main></div>`;
+}
+function go(v){view=v;err="";R()}
+function loginHTML(){
+  const first=!D||!D.user;
+  return `<div class="login"><div class="lbox"><div class="logo">CLASS <b>CASH</b></div><div class="sub">Uang Terkelola, Kelas Lebih Tertib</div>
+  <p style="margin:0 0 14px;font-weight:600">${first?"Buat akun bendahara":"Masuk sebagai bendahara"}</p>
+  <label>Nama pengguna</label><input id="u" autocomplete="username"><div style="height:12px"></div>
+  <label>Kata sandi</label><input id="p" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')auth()">
+  <div class="err">${esc(err)}</div><button class="btn" style="width:100%;margin-top:6px" onclick="auth()">${first?"Buat Akun & Masuk":"Masuk"}</button></div></div>`;
+}
+async function auth(){
+  const u=$("#u").value.trim(),p=$("#p").value;
+  if(!u||p.length<3){err="Isi nama pengguna dan kata sandi.";R();return}
+  const h=await hash(p);
+  if(!D||!D.user){D=fresh({name:u,hash:h});save()}
+  else if(D.user.name!==u||D.user.hash!==h){err="Nama pengguna atau kata sandi salah.";R();return}
+  err="";setLogged(true);R();
+}
+function logout(){setLogged(false);pv="home";R()}
+let pv="home";
+function pgo(v){pv=v;err="";R();window.scrollTo(0,0)}
+function homeHTML(){
+  const s=D?D.pays.reduce((t,x)=>t+x.amt,0)-D.exps.reduce((t,x)=>t+x.amt,0):0;
+  const c=(e,t,d)=>`<div class="card" style="text-align:center;padding:26px 20px;transition:.25s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><div style="font-size:34px">${e}</div><h3 style="margin:12px 0 8px;font-size:17px">${t}</h3><div class="k" style="line-height:1.6">${d}</div></div>`;
+  return `<div class="pm"><div class="hero" style="text-align:center;padding:56px 24px;background:radial-gradient(circle at 85% 15%,rgba(110,160,255,.5),transparent 45%),radial-gradient(circle at 10% 90%,rgba(110,160,255,.3),transparent 40%),linear-gradient(135deg,#0b1f4d,#1d4ed8)">
+    <div style="font-size:14px;letter-spacing:3px;color:#cfd9f5">SELAMAT DATANG DI</div>
+    <div style="font-size:clamp(34px,8vw,56px);font-weight:800;letter-spacing:1px;margin:8px 0">CLASS CASH</div>
+    <div style="color:#cfd9f5;margin-bottom:26px">Uang Terkelola, Kelas Lebih Tertib</div>
+    <div style="display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:10px 22px;margin-bottom:26px"><span style="color:#cfd9f5;font-size:13px">Saldo kas saat ini</span> &nbsp; <b style="font-size:18px">${rp(s)}</b></div><br>
+    <button class="btn" style="background:#fff;color:#0b1f4d;padding:12px 24px" onclick="pgo('kas')">Lihat Uang Kas</button></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    ${c("🤝","Kenapa Bayar Kas?","Iuran kecil dari semua, manfaatnya untuk semua.")}
+    ${c("🛡️","Kenapa Kas Penting?","Jadi dana cadangan saat ada keperluan mendadak.")}
+    ${c("🎉","Untuk Apa Kas?","Kebersihan, alat tulis, acara kelas, dan solidaritas.")}</div></div>`}
+function _oldHome(){
+  const sec=(t,s,items)=>`<h2 style="margin:32px 0 6px;font-size:22px">${t}</h2><p class="k" style="margin:0 0 16px">${s}</p><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">${items.map(i=>`<div class="card"><div style="font-size:28px">${i[0]}</div><h3 style="margin:8px 0 6px">${i[1]}</h3><div class="k">${i[2]}</div></div>`).join("")}</div>`;
+  return `<div class="pm"><div class="hero" style="padding:40px 28px"><div class="k">Selamat Datang di</div><div class="v" style="font-size:40px;letter-spacing:.5px">CLASS CASH</div><p style="max-width:560px;margin:12px 0 20px;line-height:1.6">Sistem pengelolaan uang kas kelas yang rapi, transparan, dan mudah dipantau oleh seluruh anggota kelas.</p><div class="k" style="margin-bottom:18px">Uang Terkelola, Kelas Lebih Tertib</div><button class="btn" style="background:#fff;color:#0b1f4d" onclick="pgo('kas')">Lihat Uang Kas →</button></div>
+  ${sec("Alasan Kita Membayar Kas","Iuran kecil yang dibayar rutin memberi manfaat untuk semua.",[["🤝","Kebersamaan","Kas adalah tanggung jawab bersama. Setiap orang ikut berkontribusi, jadi bebannya ringan dan merata."],["🙋","Dipakai untuk Kita","Semua uang yang terkumpul kembali untuk kebutuhan dan kepentingan seluruh anggota kelas."],["⏱️","Tidak Mendadak","Dengan iuran rutin, kita tidak perlu patungan besar secara tiba-tiba saat ada kebutuhan."],["🌱","Melatih Disiplin","Membayar tepat waktu melatih kejujuran, tanggung jawab, dan kebiasaan mengelola uang."]])}
+  ${sec("Mengapa Kas Itu Penting?","Kas yang dikelola baik membuat kelas lebih siap dan nyaman.",[["🛟","Dana Cadangan","Saat ada keperluan mendesak, kelas sudah punya dana sehingga tidak bingung mencari uang."],["🔍","Transparan","Setiap pemasukan dan pengeluaran tercatat dan bisa dilihat siapa saja di tab Uang Kas."],["⚖️","Adil","Semua siswa punya kewajiban yang sama, dan tunggakan tercatat jelas sehingga tidak ada yang merasa dirugikan."],["🏫","Kelas Lebih Tertib","Perlengkapan dan kegiatan kelas terurus, suasana belajar jadi lebih nyaman."]])}
+  ${sec("Kegunaan Uang Kas","Beberapa contoh penggunaan kas kelas.",[["🧹","Kebersihan Kelas","Membeli sapu, pel, kain lap, tempat sampah, dan perlengkapan kebersihan lainnya."],["🖊️","Alat Tulis & Perlengkapan","Spidol, kapur, penghapus, kertas, dan fotokopi untuk kebutuhan kelas."],["🎉","Kegiatan & Acara","Perayaan, lomba, kegiatan perpisahan, dan acara kelas lainnya."],["💐","Solidaritas","Bantuan untuk teman atau keluarga yang sakit atau tertimpa musibah."],["🔧","Perawatan Kelas","Memperbaiki atau mengganti fasilitas kelas yang rusak."],["📌","Keperluan Mendadak","Kebutuhan tak terduga yang disepakati bersama oleh kelas."]])}
+  <div class="card" style="margin-top:28px;text-align:center"><h3>Ingin tahu saldo kas sekarang?</h3><p class="k">Cek total uang kas serta daftar pemasukan dan pengeluaran.</p><button class="btn" onclick="pgo('kas')">Lihat Uang Kas</button></div></div>`}
+function pubHTML(){
+  const P=D?D.pays:[],E=D?D.exps:[],a=P.reduce((t,x)=>t+x.amt,0),b=E.reduce((t,x)=>t+x.amt,0);
+  const top=`<div class="ph"><div class="logo" style="color:#fff">CLASS <b style="color:#6ea0ff">CASH</b></div><div style="flex:1"></div><button class="nav ${pv==="home"?"on":""}" onclick="pgo('home')">🏠 Home</button><button class="nav ${pv==="kas"?"on":""}" onclick="pgo('kas')">💰 Uang Kas</button><button class="nav ${pv==="login"?"on":""}" onclick="pgo('login')">🔐 Login Bendahara</button></div>`;
+  if(pv==="login")return top+loginHTML();
+  if(pv==="home")return top+homeHTML();
+  const srt=x=>[...x].sort((p,q)=>q.date.localeCompare(p.date));
+  const ri=srt(P).map(p=>`<tr><td>${fd(p.date)}</td><td>${esc(sname(p.sid))}</td><td class="ok">+${rp(p.amt)}</td></tr>`).join("");
+  const ro=srt(E).map(p=>`<tr><td>${fd(p.date)}</td><td>${esc(p.desc)}</td><td class="bad">-${rp(p.amt)}</td></tr>`).join("");
+  return top+`<div class="pm"><div class="hero"><div class="k">Total Uang Kas Saat Ini</div><div class="v">${rp(a-b)}</div><div class="k" style="margin-top:8px">Uang Terkelola, Kelas Lebih Tertib</div></div>
+  <div class="grid"><div class="card"><div class="k">Total Pemasukan</div><div class="v ok">${rp(a)}</div></div><div class="card"><div class="k">Total Pengeluaran</div><div class="v bad">${rp(b)}</div></div></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"><div class="card"><h3>Daftar Pemasukan</h3>${tbl(["Tanggal","Siswa","Jumlah"],ri)}</div><div class="card"><h3>Daftar Pengeluaran</h3>${tbl(["Tanggal","Keperluan","Jumlah"],ro)}</div></div></div>`;
+}
+
+const tbl=(h,rows)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${rows||`<tr><td colspan="${h.length}" class="k">Belum ada data.</td></tr>`}</table></div>`;
+const V={
+dash(){
+  const sal=inc()-out(),tg=D.students.reduce((a,s)=>a+due(s.id),0),bm=D.students.filter(s=>due(s.id)>0);
+  const months=[];for(let i=5;i>=0;i--){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);months.push(d.toISOString().slice(0,7))}
+  const sum=(a,m)=>a.filter(x=>x.date.slice(0,7)===m).reduce((t,x)=>t+x.amt,0);
+  const mx=Math.max(1,...months.map(m=>Math.max(sum(D.pays,m),sum(D.exps,m))));
+  const bars=months.map(m=>`<div class="bc"><div class="bp"><i style="height:${sum(D.pays,m)/mx*100}%;background:var(--blue)"></i><i style="height:${sum(D.exps,m)/mx*100}%;background:#f59e0b"></i></div><span class="k">${new Date(m+"-01").toLocaleDateString("id-ID",{month:"short"})}</span></div>`).join("");
+  const tx=[...D.pays.map(p=>({...p,t:"in",d:sname(p.sid)})),...D.exps.map(p=>({...p,t:"out",d:p.desc}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+  return `<div class="grid"><div class="card"><div class="k">Saldo Kas</div><div class="v ${sal<0?"bad":""}">${rp(sal)}</div></div>
+  <div class="card"><div class="k">Total Pemasukan</div><div class="v ok">${rp(inc())}</div></div>
+  <div class="card"><div class="k">Total Pengeluaran</div><div class="v bad">${rp(out())}</div></div>
+  <div class="card"><div class="k">Total Tunggakan</div><div class="v">${rp(tg)}</div><div class="k">${bm.length} dari ${D.students.length} siswa menunggak</div></div></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"><div class="card"><h3>Pemasukan vs Pengeluaran (6 bulan)</h3><div class="bars">${bars}</div><p class="k" style="margin:10px 0 0">🟦 Pemasukan &nbsp; 🟧 Pengeluaran</p></div>
+  <div class="card"><h3>Transaksi Terakhir</h3>${tbl(["Tanggal","Keterangan","Jumlah"],tx.map(t=>`<tr><td>${fd(t.date)}</td><td>${esc(t.d)}</td><td class="${t.t==="in"?"ok":"bad"}">${t.t==="in"?"+":"-"}${rp(t.amt)}</td></tr>`).join(""))}</div></div>`},
+siswa(){
+  return `<div class="card"><h3>26 Siswa — klik nama untuk mengubah</h3>${tbl(["No","Nama","Terbayar","Tunggakan"],D.students.map((s,i)=>`<tr><td>${i+1}</td><td><input value="${esc(s.name)}" onchange="rename('${s.id}',this.value)" style="min-width:200px"></td><td>${rp(paid(s.id))}</td><td class="${due(s.id)?"bad":"ok"}">${rp(due(s.id))}</td></tr>`).join(""))}</div>`},
+bayar(){
+  const rows=[...D.pays].sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`<tr><td>${fd(p.date)}</td><td>${esc(sname(p.sid))}</td><td class="ok">${rp(p.amt)}</td><td>${esc(p.note||"")}</td><td><button class="btn r s" onclick="del('pays','${p.id}')">${PD==='pays'+p.id?'Yakin?':'Hapus'}</button></td></tr>`).join("");
+  return `<div class="card" style="margin-bottom:16px"><h3>Catat Pembayaran</h3><div class="row"><div><label>Siswa</label><select id="ps" onchange="fillDue()">${D.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select></div>
+  <div><label>Jumlah (Rp)</label><input id="pa" type="number" min="1" value="${D.rate}"></div><div><label>Tanggal</label><input id="pd" type="date" value="${today()}"></div><div><label>Catatan</label><input id="pn"></div><button class="btn" onclick="addPay()">Simpan</button></div><div class="err">${esc(err)}</div></div>
+  <div class="card"><h3>Riwayat Pembayaran</h3>${tbl(["Tanggal","Siswa","Jumlah","Catatan",""],rows)}</div>`},
+keluar(){
+  const rows=[...D.exps].sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`<tr><td>${fd(p.date)}</td><td>${esc(p.desc)}</td><td class="bad">${rp(p.amt)}</td><td><button class="btn r s" onclick="del('exps','${p.id}')">${PD==='exps'+p.id?'Yakin?':'Hapus'}</button></td></tr>`).join("");
+  return `<div class="card" style="margin-bottom:16px"><h3>Catat Pengeluaran</h3><div class="row"><div><label>Keperluan</label><input id="ed"></div><div><label>Jumlah (Rp)</label><input id="ea" type="number" min="1"></div><div><label>Tanggal</label><input id="et" type="date" value="${today()}"></div><button class="btn" onclick="addExp()">Simpan</button></div><div class="err">${esc(err)}</div></div>
+  <div class="card"><h3>Riwayat Pengeluaran</h3>${tbl(["Tanggal","Keperluan","Jumlah",""],rows)}</div>`},
+lap(){
+  const rows=D.students.map((s,i)=>{const d=due(s.id);return `<tr><td>${i+1}</td><td>${esc(s.name)}</td><td>${rp(wd()*D.rate)}</td><td>${rp(paid(s.id))}</td><td>${rp(d)}</td><td><span class="pill ${d?"t":"l"}">${d?"Menunggak":"Lunas"}</span></td></tr>`}).join("");
+  return `<div class="grid"><div class="card"><div class="k">Periode</div><div class="v" style="font-size:17px">${fd(D.start)} – ${fd(today())}</div><div class="k">${wd()} hari sekolah × ${rp(D.rate)} = ${rp(D.rate*5)}/minggu</div></div>
+  <div class="card"><div class="k">Pemasukan</div><div class="v ok">${rp(inc())}</div></div><div class="card"><div class="k">Pengeluaran</div><div class="v bad">${rp(out())}</div></div><div class="card"><div class="k">Saldo Akhir</div><div class="v">${rp(inc()-out())}</div></div></div>
+  <div class="card"><h3>Laporan Iuran per Siswa</h3>${tbl(["No","Nama","Kewajiban","Terbayar","Tunggakan","Status"],rows)}</div>`},
+set(){
+  return `<div class="card" style="max-width:520px"><h3>Pengaturan Iuran</h3><label>Iuran per hari (Rp) — 5 hari sekolah = 1 minggu</label><input id="sr" type="number" min="0" value="${D.rate}"><div style="height:12px"></div><label>Tanggal mulai kas</label><input id="ss" type="date" value="${D.start}"><div style="height:14px"></div><button class="btn" onclick="setCfg()">Simpan Pengaturan</button>
+  <hr style="border:0;border-top:1px solid var(--bd);margin:22px 0"><h3>Ganti Kata Sandi</h3><input id="np" type="password" placeholder="Kata sandi baru (min. 4 karakter)"><div style="height:10px"></div><button class="btn g" onclick="chPw()">Ubah Kata Sandi</button>
+  <hr style="border:0;border-top:1px solid var(--bd);margin:22px 0"><h3>Reset Data</h3><p class="k">Menghapus semua pembayaran dan pengeluaran. Nama siswa tetap.</p><button class="btn r" onclick="resetAll()">${RS?'Klik lagi untuk konfirmasi':'Hapus Semua Transaksi'}</button><div class="err">${esc(err)}</div></div>`}
+};
+function rename(id,n){const s=D.students.find(x=>x.id===id);if(s&&n.trim()){s.name=n.trim();save()}}
+function fillDue(){const d=due($("#ps").value);if(d>0)$("#pa").value=d}
+function addPay(){const amt=+$("#pa").value,sid=$("#ps").value,date=$("#pd").value;
+  if(!(amt>0)||!date){err="Jumlah dan tanggal wajib diisi.";R();return}
+  D.pays.push({id:uid(),sid,amt,date,note:$("#pn").value.trim()});err="";save();R()}
+function addExp(){const amt=+$("#ea").value,desc=$("#ed").value.trim(),date=$("#et").value;
+  if(!(amt>0)||!desc||!date){err="Keperluan, jumlah, dan tanggal wajib diisi.";R();return}
+  D.exps.push({id:uid(),desc,amt,date});err="";save();R()}
+function del(k,id){const key=k+id;if(PD===key){D[k]=D[k].filter(x=>x.id!==id);PD=null;save();R();toast("✓ Data dihapus")}else{PD=key;R();setTimeout(()=>{if(PD===key){PD=null;R()}},3000)}}
+function setCfg(){const r=+$("#sr").value,s=$("#ss").value;if(r>=0&&s){D.rate=r;D.start=s;save();err="";R()}}
+async function chPw(){const p=$("#np").value;if(p.length<4){err="Kata sandi minimal 4 karakter.";R();return}D.user.hash=await hash(p);save();err="";toast("✓ Kata sandi diubah");R()}
+function resetAll(){if(RS){D.pays=[];D.exps=[];RS=false;save();R();toast("✓ Semua transaksi dihapus")}else{RS=true;R();setTimeout(()=>{if(RS){RS=false;R()}},4000)}}
+load();R();READY=true;initDB();
+</script></body></html>
